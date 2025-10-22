@@ -1,469 +1,269 @@
+const ACHIEVEMENT_KEY = 'chessQuizAchievements';
+
+function loadAchievements() {
+    const saved = localStorage.getItem(ACHIEVEMENT_KEY);
+    return saved ? JSON.parse(saved) : { easy: false, medium: false, hard: false };
+}
+
+function saveAchievement(difficulty) {
+    const achievements = loadAchievements();
+    achievements[difficulty] = true;
+    localStorage.setItem(ACHIEVEMENT_KEY, JSON.stringify(achievements));
+    return achievements;
+}
+
+function hasAllAchievements(achievements) {
+    return achievements.easy && achievements.medium && achievements.hard;
+}
+
+// Dados do Quiz
 const questions = [
     {
-        question: "Qual dinossauro é conhecido como 'lagarto com chifre'?",
-        options: [
-            {
-                text: "Triceratops",
-                image: "https://images.fineartamerica.com/images-medium-large-5/1-triceratops-horridus-dinosaur-julius-t-csotonyiscience-photo-library.jpg",
-                correct: true
-            },
-            {
-                text: "Tiranossauro Rex",
-                image: "https://i.pinimg.com/736x/9b/2d/21/9b2d216e90331393f5cb999b5860910f.jpg",
-                correct: false
-            },
-            {
-                text: "Velociraptor",
-                image: "https://upload.wikimedia.org/wikipedia/commons/5/55/Velociraptor_Restoration.png",
-                correct: false
-            },
-            {
-                text: "Estegossauro",
-                image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiZOFkc5Fp7wqxAriKYM1Ke6y-nWLti-8qC8K65d665vhmbWMcThlnC9E1R6iKtCmKcoHfUxY8Z1-i04TzypFtXgnik_9-9EbrSPDD8jZ6jln6orK0ZU2Gf_7UyDABXuxJSQcoACigfyQsE/s1600/Stegosaurus+Armatus+by+Camus+Altamirano.png",
-                correct: false
-            }
-        ]
+        question: "Qual peça pode se mover em forma de 'L'?",
+        options: ["Bispo", "Cavalo", "Torre", "Rainha"],
+        correctAnswer: 1
     },
     {
-        question: "Qual destes dinossauros era carnívoro?",
-        options: [
-            {
-                text: "Brontossauro",
-                image: "https://s2.glbimg.com/gfwsAuvW8mmYOSvKTAuZkQj4qzY=/s.glbimg.com/jo/g1/f/original/2015/04/07/brontosaur.jpg",
-                correct: false
-            },
-            {
-                text: "Espinossauro",
-                image: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Spinosaurus_aegyptiacus.png",
-                correct: true
-            },
-            {
-                text: "Triceratops",
-                image: "https://images.fineartamerica.com/images-medium-large-5/1-triceratops-horridus-dinosaur-julius-t-csotonyiscience-photo-library.jpg",
-                correct: false
-            },
-            {
-                text: "Anquilossauro",
-                image: "https://www.atlasvirtual.com.br/jpg/anquilossauro2.jpg",
-                correct: false
-            }
-        ]
+        question: "Quantas casas pode avançar um peão no seu primeiro movimento?",
+        options: ["1 casa", "2 casas", "1 ou 2 casas", "3 casas"],
+        correctAnswer: 2
     },
     {
-        question: "Qual dinossauro tinha placas ósseas nas costas?",
+        question: "O que é o 'roque' no xadrez?",
         options: [
-            {
-                text: "Tiranossauro Rex",
-                image: "https://i.pinimg.com/736x/9b/2d/21/9b2d216e90331393f5cb999b5860910f.jpg",
-                correct: false
-            },
-            {
-                text: "Velociraptor",
-                image: "https://upload.wikimedia.org/wikipedia/commons/5/55/Velociraptor_Restoration.png",
-                correct: false
-            },
-            {
-                text: "Estegossauro",
-                image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiZOFkc5Fp7wqxAriKYM1Ke6y-nWLti-8qC8K65d665vhmbWMcThlnC9E1R6iKtCmKcoHfUxY8Z1-i04TzypFtXgnik_9-9EbrSPDD8jZ6jln6orK0ZU2Gf_7UyDABXuxJSQcoACigfyQsE/s1600/Stegosaurus+Armatus+by+Camus+Altamirano.png",
-                correct: true
-            },
-            {
-                text: "Pterodáctilo",
-                image: "https://www.infoescola.com/wp-content/uploads/2010/07/pterod%C3%A1ctilo_188956646.jpg",
-                correct: false
-            }
-        ]
+            "Um movimento especial com o rei e a torre",
+            "Um tipo de peão",
+            "Uma jogada de ataque",
+            "Uma peça do jogo"
+        ],
+        correctAnswer: 0
     },
     {
-        question: "Qual era o maior dinossauro carnívoro?",
-        options: [
-            {
-                text: "Tiranossauro Rex",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Tyrannosaurus%20Rex%20large%20carnivore&id=13",
-                correct: false
-            },
-            {
-                text: "Espinossauro",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Spinosaurus%20largest%20carnivorous%20dinosaur&id=14",
-                correct: true
-            },
-            {
-                text: "Alossauro",
-                image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiZOFkc5Fp7wqxAriKYM1Ke6y-nWLti-8qC8K65d665vhmbWMcThlnC9E1R6iKtCmKcoHfUxY8Z1-i04TzypFtXgnik_9-9EbrSPDD8jZ6jln6orK0ZU2Gf_7UyDABXuxJSQcoACigfyQsE/s1600/Stegosaurus+Armatus+by+Camus+Altamirano.png",
-                correct: false
-            },
-            {
-                text: "Carnotauro",
-                image: "hhttps://upload.wikimedia.org/wikipedia/commons/thumb/8/81/Carnotaurus_Reconstruction_%282022%29.png/250px-Carnotaurus_Reconstruction_%282022%29.png",
-                correct: false
-            }
-        ]
+        question: "Qual é a única peça que pode 'saltar' outras peças?",
+        options: ["Rainha", "Bispo", "Cavalo", "Torre"],
+        correctAnswer: 2
     },
     {
-        question: "Qual dinossauro tinha um 'clube' na cauda?",
-        options: [
-            {
-                text: "Estegossauro",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Stegosaurus%20with%20spiked%20tail&id=17",
-                correct: false
-            },
-            {
-                text: "Anquilossauro",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Ankylosaurus%20with%20tail%20club&id=18",
-                correct: true
-            },
-            {
-                text: "Triceratops",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Triceratops%20with%20horns&id=19",
-                correct: false
-            },
-            {
-                text: "Diplodoco",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Diplodocus%20long-necked%20dinosaur&id=20",
-                correct: false
-            }
-        ]
+        question: "Como se chama a jogada especial onde o peão pode capturar outro peão?",
+        options: ["En passant", "Promoção", "Xeque", "Roque"],
+        correctAnswer: 0
     },
     {
-        question: "Qual destes NÃO era um dinossauro, mas um réptil voador?",
-        options: [
-            {
-                text: "Pteranodon",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Pteranodon%20flying%20reptile%20with%20crest&id=21",
-                correct: true
-            },
-            {
-                text: "Velociraptor",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Velociraptor%20feathered%20dinosaur&id=22",
-                correct: false
-            },
-            {
-                text: "Iguanodonte",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Iguanodon%20with%20thumb%20spikes&id=23",
-                correct: false
-            },
-            {
-                text: "Paquicefalossauro",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Pachycephalosaurus%20with%20dome%20head&id=24",
-                correct: false
-            }
-        ]
+        question: "Em quantas direções o bispo pode se mover?",
+        options: ["2 direções", "4 direções", "8 direções", "6 direções"],
+        correctAnswer: 1
     },
     {
-        question: "Qual dinossauro tinha um pescoço extremamente longo?",
+        question: "Quando um peão chega à última linha do tabuleiro, o que acontece?",
         options: [
-            {
-                text: "Tiranossauro Rex",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Tyrannosaurus%20Rex%20short-necked&id=25",
-                correct: false
-            },
-            {
-                text: "Braquiossauro",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Brachiosaurus%20with%20extremely%20long%20neck&id=26",
-                correct: true
-            },
-            {
-                text: "Triceratops",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Triceratops%20short-necked&id=27",
-                correct: false
-            },
-            {
-                text: "Anquilossauro",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Ankylosaurus%20low%20profile&id=28",
-                correct: false
-            }
-        ]
+            "Ele é removido do jogo",
+            "Ele pode ser promovido a qualquer peça (exceto rei)",
+            "Ele volta ao início",
+            "Nada acontece"
+        ],
+        correctAnswer: 1
     },
     {
-        question: "Qual dinossauro tinha dedos com garras em forma de foice?",
-        options: [
-            {
-                text: "Estegossauro",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Stegosaurus%20with%20plates&id=29",
-                correct: false
-            },
-            {
-                text: "Deinonico",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Deinonychus%20with%20sickle%20claws&id=30",
-                correct: true
-            },
-            {
-                text: "Triceratops",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Triceratops%20with%20horns&id=31",
-                correct: false
-            },
-            {
-                text: "Paquicefalossauro",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Pachycephalosaurus%20dome-headed&id=32",
-                correct: false
-            }
-        ]
+        question: "Quantas casas tem um tabuleiro de xadrez?",
+        options: ["32 casas", "64 casas", "48 casas", "100 casas"],
+        correctAnswer: 1
     },
     {
-        question: "Qual era o dinossauro com 'bico de pato'?",
+        question: "O que significa 'xeque-mate'?",
         options: [
-            {
-                text: "Hadrossauro",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Hadrosaurus%20duck-billed%20dinosaur&id=33",
-                correct: true
-            },
-            {
-                text: "Velociraptor",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Velociraptor%20with%20sharp%20teeth&id=34",
-                correct: false
-            },
-            {
-                text: "Tiranossauro Rex",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Tyrannosaurus%20Rex%20with%20large%20teeth&id=35",
-                correct: false
-            },
-            {
-                text: "Anquilossauro",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Ankylosaurus%20armored&id=36",
-                correct: false
-            }
-        ]
+            "O rei está em perigo mas pode escapar",
+            "O rei foi capturado",
+            "O rei está em xeque e não há como escapar",
+            "O jogo terminou em empate"
+        ],
+        correctAnswer: 2
     },
     {
-        question: "Qual dinossauro tinha uma cabeça em forma de cúpula espessa?",
-        options: [
-            {
-                text: "Triceratops",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Triceratops%20with%20horned%20head&id=37",
-                correct: false
-            },
-            {
-                text: "Paquicefalossauro",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Pachycephalosaurus%20with%20dome-shaped%20head&id=38",
-                correct: true
-            },
-            {
-                text: "Velociraptor",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Velociraptor%20with%20elongated%20skull&id=39",
-                correct: false
-            },
-            {
-                text: "Estegossauro",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Stegosaurus%20with%20small%20head&id=40",
-                correct: false
-            }
-        ]
+        question: "Qual peça tem valor teórico de 9 pontos no xadrez?",
+        options: ["Torre", "Bispo", "Rainha", "Cavalo"],
+        correctAnswer: 2
     },
     {
-        question: "Qual destes dinossauros era herbívoro?",
-        options: [
-            {
-                text: "Tiranossauro Rex",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Tyrannosaurus%20Rex%20carnivore&id=41",
-                correct: false
-            },
-            {
-                text: "Espinossauro",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Spinosaurus%20fish-eating%20predator&id=42",
-                correct: false
-            },
-            {
-                text: "Iguanodonte",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Iguanodon%20herbivorous%20dinosaur&id=43",
-                correct: true
-            },
-            {
-                text: "Velociraptor",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Velociraptor%20predatory%20dinosaur&id=44",
-                correct: false
-            }
-        ]
+        question: "Qual é a abertura mais popular no xadrez?",
+        options: ["Defesa Siciliana", "Ruy López", "Gambito da Rainha", "Defesa Francesa"],
+        correctAnswer: 0
     },
     {
-        question: "Qual dinossauro é conhecido por seus 'polegares pontiagudos'?",
+        question: "O que é uma 'forquilha' no xadrez?",
         options: [
-            {
-                text: "Iguanodonte",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Iguanodon%20with%20thumb%20spikes&id=45",
-                correct: true
-            },
-            {
-                text: "Tiranossauro Rex",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Tyrannosaurus%20Rex%20with%20small%20arms&id=46",
-                correct: false
-            },
-            {
-                text: "Estegossauro",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Stegosaurus%20with%20plates&id=47",
-                correct: false
-            },
-            {
-                text: "Anquilossauro",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Ankylosaurus%20with%20armor&id=48",
-                correct: false
-            }
-        ]
+            "Um movimento defensivo",
+            "Um ataque duplo a duas ou mais peças",
+            "Uma regra especial",
+            "Um tipo de empate"
+        ],
+        correctAnswer: 1
     },
     {
-        question: "Qual era o menor dinossauro conhecido?",
-        options: [
-            {
-                text: "Compsognato",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Compsognathus%20small%20dinosaur&id=49",
-                correct: true
-            },
-            {
-                text: "Tiranossauro Rex",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Tyrannosaurus%20Rex%20large%20dinosaur&id=50",
-                correct: false
-            },
-            {
-                text: "Brontossauro",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Brontosaurus%20giant%20dinosaur&id=51",
-                correct: false
-            },
-            {
-                text: "Triceratops",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Triceratops%20large%20herbivore&id=52",
-                correct: false
-            }
-        ]
+        question: "Quantos cavalos cada jogador tem no início da partida?",
+        options: ["1", "2", "3", "4"],
+        correctAnswer: 1
     },
     {
-        question: "Qual era o dinossauro mais inteligente?",
+        question: "O que é um 'zugzwang'?",
         options: [
-            {
-                text: "Estegossauro",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Stegosaurus%20with%20small%20brain&id=53",
-                correct: false
-            },
-            {
-                text: "Troodon",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Troodon%20intelligent%20dinosaur&id=54",
-                correct: true
-            },
-            {
-                text: "Anquilossauro",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Ankylosaurus%20armored%20dinosaur&id=55",
-                correct: false
-            },
-            {
-                text: "Diplodoco",
-                image: "https://placeholder-image-service.onrender.com/image/200x120?prompt=Diplodocus%20long-necked%20dinosaur&id=56",
-                correct: false
-            }
-        ]
+            "Uma abertura alemã",
+            "Uma situação onde qualquer movimento piora a posição",
+            "Um tipo de xeque-mate",
+            "Uma peça especial"
+        ],
+        correctAnswer: 1
+    },
+    {
+        question: "Qual é o movimento mais longo que uma torre pode fazer em um tabuleiro vazio?",
+        options: ["5 casas", "7 casas", "8 casas", "6 casas"],
+        correctAnswer: 1
     }
 ];
 
-let currentQuestion = 0;
+const difficultyConfig = {
+    easy: { name: "Fácil", questions: 5 },
+    medium: { name: "Médio", questions: 10 },
+    hard: { name: "Difícil", questions: 15 }
+};
+
+// Estado do jogo
+let currentDifficulty = null;
+let activeQuestions = [];
+let currentQuestionIndex = 0;
 let score = 0;
-let userAnswers = new Array(questions.length).fill(null);
+let answered = false;
 
-const questionElement = document.getElementById('question');
-const optionsElement = document.getElementById('options');
-const currentElement = document.getElementById('current');
-const scoreElement = document.getElementById('score');
-const prevButton = document.getElementById('prev-btn');
-const nextButton = document.getElementById('next-btn');
+// Iniciar Quiz
+function startQuiz(difficulty) {
+    currentDifficulty = difficulty;
+    activeQuestions = questions.slice(0, difficultyConfig[difficulty].questions);
+    currentQuestionIndex = 0;
+    score = 0;
+    answered = false;
 
-function loadQuestion() {
-    currentElement.textContent = currentQuestion + 1;
-    scoreElement.textContent = score;
+    document.getElementById('difficultyScreen').classList.add('hidden');
+    document.getElementById('quizScreen').classList.remove('hidden');
+    document.getElementById('resultScreen').classList.add('hidden');
 
-    const question = questions[currentQuestion];
-    questionElement.textContent = question.question;
+    showQuestion();
+}
 
-    optionsElement.innerHTML = '';
+// Mostrar pergunta
+function showQuestion() {
+    const question = activeQuestions[currentQuestionIndex];
+    const totalQuestions = activeQuestions.length;
+
+    document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+    document.getElementById('totalQuestions').textContent = totalQuestions;
+    document.getElementById('scoreDisplay').textContent = score;
+    document.getElementById('questionText').textContent = question.question;
+
+    const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+
+    const optionsContainer = document.getElementById('optionsContainer');
+    optionsContainer.innerHTML = '';
 
     question.options.forEach((option, index) => {
-        const optionElement = document.createElement('div');
-        optionElement.classList.add('option');
+        const button = document.createElement('button');
+        button.className = 'option-button';
+        button.onclick = () => handleAnswer(index);
 
-        if (userAnswers[currentQuestion] === index) {
-            optionElement.classList.add(option.correct ? 'correct' : 'incorrect');
-        }
+        const letter = String.fromCharCode(65 + index);
 
-        optionElement.innerHTML = `
-                    <img src="${option.image}" alt="${option.text}">
-                    <div class="option-text">${option.text}</div>
+        button.innerHTML = `
+                    <div class="option-letter">${letter}</div>
+                    <span class="option-text">${option}</span>
                 `;
 
-        optionElement.addEventListener('click', () => selectOption(index));
-        optionsElement.appendChild(optionElement);
+        optionsContainer.appendChild(button);
     });
 
-    updateNavigationButtons();
+    answered = false;
 }
 
-function selectOption(optionIndex) {
-    if (userAnswers[currentQuestion] !== null) return;
+// Lidar com resposta
+function handleAnswer(answerIndex) {
+    if (answered) return;
 
-    userAnswers[currentQuestion] = optionIndex;
-    const correct = questions[currentQuestion].options[optionIndex].correct;
+    answered = true;
+    const question = activeQuestions[currentQuestionIndex];
+    const buttons = document.querySelectorAll('.option-button');
 
-    if (correct) {
-        score++;
-        scoreElement.textContent = score;
-    }
+    buttons.forEach((button, index) => {
+        button.classList.add('disabled');
 
-    const optionElements = optionsElement.querySelectorAll('.option');
-    optionElements.forEach((element, index) => {
-        const isCorrect = questions[currentQuestion].options[index].correct;
-        if (index === optionIndex) {
-            element.classList.add(isCorrect ? 'correct' : 'incorrect');
-        } else if (isCorrect && userAnswers[currentQuestion] !== null) {
-            element.classList.add('correct');
+        if (index === question.correctAnswer) {
+            button.classList.add('correct');
+            button.innerHTML += '<span class="option-icon correct-icon">✓</span>';
+        }
+
+        if (index === answerIndex && index !== question.correctAnswer) {
+            button.classList.add('incorrect');
+            button.innerHTML += '<span class="option-icon incorrect-icon">✗</span>';
         }
     });
 
-    updateNavigationButtons();
-}
-
-function updateNavigationButtons() {
-    prevButton.disabled = currentQuestion === 0;
-
-    if (currentQuestion === questions.length - 1) {
-        nextButton.textContent = 'Finalizar';
-    } else {
-        nextButton.textContent = 'Próxima';
+    if (answerIndex === question.correctAnswer) {
+        score++;
     }
 
-    if (currentQuestion === questions.length - 1 && userAnswers[currentQuestion] !== null) {
-        nextButton.textContent = 'Ver Resultados';
-    }
+    setTimeout(() => {
+        const nextQuestion = currentQuestionIndex + 1;
+        if (nextQuestion < activeQuestions.length) {
+            currentQuestionIndex = nextQuestion;
+            showQuestion();
+        } else {
+            showResult();
+        }
+    }, 1500);
 }
 
-prevButton.addEventListener('click', () => {
-    if (currentQuestion > 0) {
-        currentQuestion--;
-        loadQuestion();
-    }
-});
+// Mostrar resultado
+function showResult() {
+    const totalQuestions = activeQuestions.length;
+    const percentage = (score / totalQuestions) * 100;
 
-nextButton.addEventListener('click', () => {
-    if (currentQuestion < questions.length - 1) {
-        currentQuestion++;
-        loadQuestion();
-    } else if (currentQuestion === questions.length - 1 && userAnswers[currentQuestion] !== null) {
-        showResults();
-    }
-});
+    // Verifica se foi 100% e salva a conquista
+    if (percentage === 100) {
+        const achievements = saveAchievement(currentDifficulty);
 
-function showResults() {
-    const container = document.querySelector('.container');
-    container.innerHTML = `
-                <div class="results">
-                    <h2>Quiz Concluído!</h2>
-                    <p>Sua pontuação final: ${score} de ${questions.length}</p>
-                    <p>${getScoreMessage()}</p>
-                    <button class="restart-btn" onclick="location.reload()">Jogar Novamente</button>
-                </div>
-            `;
+        // Se completou todos os níveis com 100%, mostra a recompensa especial
+        if (hasAllAchievements(achievements)) {
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('rewardScreen').classList.remove('hidden');
+            return;
+        }
+    }
+
+    document.getElementById('quizScreen').classList.add('hidden');
+    document.getElementById('resultScreen').classList.remove('hidden');
+
+    document.getElementById('difficultyBadge').textContent = `Nível: ${difficultyConfig[currentDifficulty].name}`;
+    document.getElementById('finalScore').textContent = score;
+    document.getElementById('finalTotal').textContent = totalQuestions;
+    document.getElementById('percentageText').textContent = `${percentage.toFixed(0)}% de acertos`;
+
+    let message = '';
+    if (percentage === 100) message = "Perfeito! Você é um mestre do xadrez! 👑";
+    else if (percentage >= 80) message = "Excelente! Você domina muito bem o xadrez! 🏆";
+    else if (percentage >= 60) message = "Muito bom! Continue praticando! ⭐";
+    else if (percentage >= 40) message = "Bom trabalho! Ainda há espaço para melhorar! 📚";
+    else message = "Continue estudando! O xadrez é uma arte que se aprende com o tempo! 💪";
+
+    document.getElementById('resultMessage').textContent = message;
 }
 
-function getScoreMessage() {
-    const percentage = (score / questions.length) * 100;
-    if (percentage >= 90) return "Excelente! Você é um expert em dinossauros!";
-    if (percentage >= 70) return "Muito bom! Você conhece bem os dinossauros!";
-    if (percentage >= 50) return "Bom trabalho! Continue aprendendo sobre dinossauros!";
-    return "Estude um pouco mais sobre esses fascinantes animais pré-históricos!";
-}
+// Resetar quiz
+function resetQuiz() {
+    currentDifficulty = null;
+    activeQuestions = [];
+    currentQuestionIndex = 0;
+    score = 0;
+    answered = false;
 
-// Inicializar o quiz
-loadQuestion();
+    document.getElementById('difficultyScreen').classList.remove('hidden');
+    document.getElementById('quizScreen').classList.add('hidden');
+    document.getElementById('resultScreen').classList.add('hidden');
+    document.getElementById('rewardScreen').classList.add('hidden');
+}
