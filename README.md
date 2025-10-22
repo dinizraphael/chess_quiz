@@ -1,1 +1,1 @@
-# quiz_dinossauro
+# quiz_xadrez
